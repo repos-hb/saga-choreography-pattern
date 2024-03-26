@@ -14,9 +14,18 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private KafkaService kafkaService;
+
     public PurchaseOrder placeOrder(OrderRequestDto orderRequestDto) {
-        PurchaseOrder purchaseOrder = DtoToEntity.getpurchaseOrderEntityFromOrderRequestDto(orderRequestDto);
+        PurchaseOrder purchaseOrderEntity = DtoToEntity.getpurchaseOrderEntityFromOrderRequestDto(orderRequestDto);
+        PurchaseOrder purchaseOrder = orderRepository.save(purchaseOrderEntity);
         purchaseOrder.setOrderStatus(OrderStatus.ORDER_CREATED);
-        return orderRepository.save(purchaseOrder);
+
+        // publish order-event with status ORDER_CREATED
+        orderRequestDto.setOrderId(purchaseOrder.getId());
+        kafkaService.publishOrderEvent(orderRequestDto, OrderStatus.ORDER_CREATED);
+
+        return purchaseOrder;
     }
 }

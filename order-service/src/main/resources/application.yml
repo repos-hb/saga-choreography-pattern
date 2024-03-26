@@ -13,3 +13,11 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
+
+  cloud:
+    stream:
+      function:
+        definition: orderSupplier
+      bindings:
+        orderSupplier-out-0:
+          destination: order-event
