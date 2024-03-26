@@ -1,5 +1,6 @@
 package common.dto;
 
+import common.event.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,6 @@ public class OrderResponseDto {
     private Integer productId;
 
     private OrderStatus orderStatus;
+
+    private PaymentStatus paymentStatus;
 }
