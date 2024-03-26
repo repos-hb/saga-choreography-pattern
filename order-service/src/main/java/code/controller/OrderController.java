@@ -7,10 +7,11 @@ import code.util.EntityToDto;
 import common.dto.OrderRequestDto;
 import common.dto.OrderResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/order")
@@ -24,5 +25,15 @@ public class OrderController {
         PurchaseOrder purchaseOrder = orderService.placeOrder(orderRequestDto);
         OrderResponseDto orderResponseDto = EntityToDto.getOrderResponseDtoFromPurchaseOrderEntity(purchaseOrder);
         return orderResponseDto;
+    }
+
+    @GetMapping
+    public List<OrderResponseDto> getAll(){
+        List<PurchaseOrder> purchaseOrderList = orderService.getAllOrders();
+        List<OrderResponseDto> orderResponseDtoList = purchaseOrderList.stream()
+                .map(EntityToDto::getOrderResponseDtoFromPurchaseOrderEntity)
+                .collect(Collectors.toList());
+        return orderResponseDtoList;
+
     }
 }

@@ -8,6 +8,9 @@ import common.dto.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 public class OrderService {
 
@@ -15,7 +18,7 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private KafkaService kafkaService;
+    private OrderKafkaService kafkaService;
 
     public PurchaseOrder placeOrder(OrderRequestDto orderRequestDto) {
         PurchaseOrder purchaseOrderEntity = DtoToEntity.getpurchaseOrderEntityFromOrderRequestDto(orderRequestDto);
@@ -27,5 +30,9 @@ public class OrderService {
         kafkaService.publishOrderEvent(orderRequestDto, OrderStatus.ORDER_CREATED);
 
         return purchaseOrder;
+    }
+
+    public List<PurchaseOrder> getAllOrders() {
+        return orderRepository.findAll();
     }
 }
